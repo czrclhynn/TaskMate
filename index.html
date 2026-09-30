@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TaskMate helps groups divide work, assign responsibilities, and keep projects organized." />
+  <title>TaskMate — Divide the work. Work together.</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="site-header">
+      <button class="brand-button" id="brandButton" aria-label="Go to TaskMate home">Task<span>Mate</span></button>
+      <nav class="header-actions" aria-label="Main navigation">
+        <button class="text-button" id="savedProjectsNav">Saved Projects</button>
+        <button class="primary-button compact" id="newProjectNav">New Project</button>
+      </nav>
+    </header>
+
+    <main class="page-shell" id="mainContent" tabindex="-1">
+      <section class="screen active" id="landingScreen" aria-labelledby="landingTitle">
+        <div class="hero">
+          <p class="eyebrow">GROUP TASK PLANNER</p>
+          <h1 id="landingTitle">Divide the work.<br />Work together.</h1>
+          <p class="hero-copy">Organize your group's responsibilities, assign tasks, and work together more easily.</p>
+          <div class="hero-actions">
+            <button class="primary-button large" id="createProjectButton">Create a Project</button>
+            <button class="secondary-button large" id="viewSavedButton">View Saved Projects</button>
+          </div>
+        </div>
+
+        <div class="how-it-works" aria-labelledby="howTitle">
+          <h2 id="howTitle">How it works</h2>
+          <ol class="steps-grid">
+            <li><span>1</span><strong>Create</strong><small>Start a project</small></li>
+            <li><span>2</span><strong>Add your group</strong><small>Names are optional</small></li>
+            <li><span>3</span><strong>Generate tasks</strong><small>Use smart templates</small></li>
+            <li><span>4</span><strong>Assign</strong><small>Customize freely</small></li>
+            <li><span>5</span><strong>Share</strong><small>Save, copy, or print</small></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="screen" id="setupScreen" aria-labelledby="setupTitle">
+        <div class="screen-heading">
+          <p class="eyebrow">CREATE PROJECT</p>
+          <h1 id="setupTitle">Set up your group project</h1>
+          <p>Choose a project type, add your group size, and TaskMate will create a starting plan.</p>
+        </div>
+
+        <form class="card form-card" id="projectForm" novalidate>
+          <div class="field-grid two-columns">
+            <div class="field-group">
+              <label for="projectType">Project Type <span aria-hidden="true">*</span></label>
+              <select id="projectType" required>
+                <option value="">Select a project type</option>
+                <option value="reporting">Reporting</option>
+                <option value="research">Research</option>
+                <option value="capstone">Capstone Project</option>
+                <option value="software">Software Development</option>
+                <option value="presentation">Presentation</option>
+                <option value="assignment">Group Assignment</option>
+                <option value="case-study">Case Study</option>
+                <option value="event">Event / Organization Task</option>
+                <option value="custom">Custom</option>
+              </select>
+              <p class="field-error" id="projectTypeError"></p>
+            </div>
+
+            <div class="field-group hidden" id="customTypeGroup">
+              <label for="customTypeName">Custom Type Name</label>
+              <input id="customTypeName" type="text" maxlength="80" placeholder="e.g. School Event" />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="projectTitle">Project Title / Topic <span class="optional">Optional</span></label>
+            <input id="projectTitle" type="text" maxlength="120" placeholder="e.g. Chapter 3 – Methodology" />
+          </div>
+
+          <div class="field-group member-count-field">
+            <label for="memberCount">Number of Members <span aria-hidden="true">*</span></label>
+            <div class="number-control">
+              <button type="button" class="number-button" id="decreaseMembers" aria-label="Decrease number of members">−</button>
+              <input id="memberCount" type="number" min="1" max="30" value="5" inputmode="numeric" />
+              <button type="button" class="number-button" id="increaseMembers" aria-label="Increase number of members">+</button>
+            </div>
+            <p class="field-error" id="memberCountError"></p>
+          </div>
+
+          <div class="field-group">
+            <div class="label-row">
+              <label>Member Names <span class="optional">Optional</span></label>
+              <span class="helper-text">Blank fields become “Member #”</span>
+            </div>
+            <div class="member-inputs" id="memberInputs"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="secondary-button" id="cancelSetupButton">Cancel</button>
+            <button type="submit" class="primary-button">Generate Project</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="screen" id="workspaceScreen" aria-labelledby="workspaceTitle">
+        <div class="workspace-header">
+          <div>
+            <p class="eyebrow" id="workspaceType">REPORTING</p>
+            <h1 id="workspaceTitle">Untitled Project</h1>
+            <p class="workspace-meta" id="workspaceMeta"></p>
+          </div>
+          <div class="workspace-header-actions">
+            <button class="secondary-button" id="editProjectButton">Edit Project</button>
+            <button class="primary-button" id="saveProjectButton">Save Project</button>
+          </div>
+        </div>
+
+        <div class="summary-grid" id="summaryGrid" aria-label="Project summary"></div>
+
+        <div class="toolbar card">
+          <div class="view-toggle" role="group" aria-label="Assignment view">
+            <button class="toggle-button active" id="byTaskButton" aria-pressed="true">By Task</button>
+            <button class="toggle-button" id="byMemberButton" aria-pressed="false">By Member</button>
+          </div>
+          <div class="toolbar-actions">
+            <button class="secondary-button" id="shuffleButton">Shuffle Distribution</button>
+            <button class="secondary-button" id="copyButton">Copy Assignments</button>
+            <button class="secondary-button" id="printButton">Print</button>
+            <button class="primary-button" id="addTaskButton">+ Add Task</button>
+          </div>
+        </div>
+
+        <div id="workspaceContent"></div>
+
+        <section class="card workload-card" aria-labelledby="workloadTitle">
+          <div class="section-heading-row">
+            <div>
+              <p class="eyebrow">WORKLOAD</p>
+              <h2 id="workloadTitle">Member workload</h2>
+            </div>
+          </div>
+          <div class="workload-list" id="workloadList"></div>
+        </section>
+      </section>
+
+      <section class="screen" id="savedScreen" aria-labelledby="savedTitle">
+        <div class="screen-heading split-heading">
+          <div>
+            <p class="eyebrow">TASKMATE</p>
+            <h1 id="savedTitle">Saved Projects</h1>
+            <p>Open, duplicate, or remove projects stored on this device.</p>
+          </div>
+          <button class="primary-button" id="savedCreateButton">Create Project</button>
+        </div>
+        <div class="saved-projects-grid" id="savedProjectsList"></div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="modal-backdrop hidden" id="taskModal" role="presentation">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">TASK</p>
+            <h2 id="taskModalTitle">Add Task</h2>
+          </div>
+          <button class="icon-button" id="closeTaskModal" aria-label="Close task dialog">×</button>
+        </div>
+        <form id="taskForm">
+          <div class="field-group">
+            <label for="taskName">Task Name <span aria-hidden="true">*</span></label>
+            <input id="taskName" type="text" maxlength="100" placeholder="e.g. Database Design" />
+            <p class="field-error" id="taskNameError"></p>
+          </div>
+          <div class="field-group">
+            <label for="taskDescription">Description <span class="optional">Optional</span></label>
+            <textarea id="taskDescription" rows="4" maxlength="300" placeholder="Describe what needs to be done."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="secondary-button" id="cancelTaskModal">Cancel</button>
+            <button type="submit" class="primary-button" id="taskSubmitButton">Add Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-backdrop hidden" id="confirmModal" role="presentation">
+      <div class="modal small-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">CONFIRM</p>
+            <h2 id="confirmTitle">Are you sure?</h2>
+          </div>
+        </div>
+        <p id="confirmMessage"></p>
+        <div class="modal-actions">
+          <button class="secondary-button" id="confirmCancel">Cancel</button>
+          <button class="danger-button" id="confirmAccept">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>
